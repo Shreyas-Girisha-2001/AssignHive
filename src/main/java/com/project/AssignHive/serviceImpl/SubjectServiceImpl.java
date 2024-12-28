@@ -75,6 +75,10 @@ public class SubjectServiceImpl implements SubjectServices {
 
         existingSubject.setName(updatedSubject.getName());
         existingSubject.setDescription(updatedSubject.getDescription());
+
+        user.getSubjects().remove(subjectName);
+        user.getSubjects().add(updatedSubject.getName());
+        userRepository.save(user);
         return subjectRepository.save(existingSubject);
     }
 
