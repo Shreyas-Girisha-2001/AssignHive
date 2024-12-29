@@ -34,11 +34,11 @@ public class UserServiceImpl implements UserServices {
     @Override
     public User updateUserByUsername(String username, User updatedUser) {
         if (username == null) {
-            throw new IllegalArgumentException("Username cannot be null");
+            throw new ResourceNotFoundException("Username cannot be null");
         }
 
         User existingUser = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found with username: " + username));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with username: " + username));
 
         existingUser.setEmail(updatedUser.getEmail());
         existingUser.setRole(updatedUser.getRole());

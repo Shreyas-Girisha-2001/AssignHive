@@ -3,6 +3,7 @@ package com.project.AssignHive.serviceImpl;
 import com.project.AssignHive.entity.Subtask;
 import com.project.AssignHive.repository.SubTaskRepository;
 import com.project.AssignHive.services.SubTaskServices;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.List;
 @Service
 public class SubtaskServiceImpl implements SubTaskServices {
 
+    @Autowired
     private final SubTaskRepository subtaskRepository;
 
     public SubtaskServiceImpl(SubTaskRepository subtaskRepository) {

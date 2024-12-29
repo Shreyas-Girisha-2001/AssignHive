@@ -8,5 +8,5 @@ public interface SubjectServices {
     Subject createSubjectForUser(String username, Subject subject);
     List<Subject> getSubjectsForUser(String username);
     Subject updateSubjectForUser(String username, String subjectName, Subject updatedSubject);
-    void deleteSubjectForUser(String username, String subjectName);
+    void deleteSubject(String username, String subjectName);
 }

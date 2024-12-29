@@ -1,6 +1,7 @@
 package com.project.AssignHive.entity;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "subjects")
@@ -8,6 +9,7 @@ public class Subject {
 
     @Id
     private String id;
+    @Indexed(unique = true)
     private String name; // Subject name
     private String description;
     private String createdBy; // The user who created the subject

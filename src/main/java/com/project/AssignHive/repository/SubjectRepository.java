@@ -12,4 +12,6 @@ public interface SubjectRepository extends MongoRepository<Subject, String> {
     Optional<Subject> findByNameAndCreatedBy(String name, String createdBy);
     void deleteByName(String name);
     List<Subject> findAllByNameIn(List<String> names);
+    Optional<Object> findByName(String subjectName);
+    List<Subject> findAllByNameInAndCreatedBy(List<String> names, String createdBy);
 }

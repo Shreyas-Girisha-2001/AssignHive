@@ -38,8 +38,10 @@ public class SubjectController {
 
     // Delete a Subject for a User
     @DeleteMapping("/{username}/{subjectName}")
-    public ResponseEntity<Void> deleteSubjectForUser(@PathVariable String username, @PathVariable String subjectName) {
-        subjectService.deleteSubjectForUser(username, subjectName);
+    public ResponseEntity<Void> deleteSubject(
+            @PathVariable String username,
+            @PathVariable String subjectName) {
+        subjectService.deleteSubject(subjectName, username);
         return ResponseEntity.noContent().build();
     }
 }
