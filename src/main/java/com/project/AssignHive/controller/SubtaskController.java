@@ -10,28 +10,45 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/subtasks")
-@CrossOrigin("*")
 public class SubtaskController {
+
     @Autowired
-    private final SubTaskServices subTaskServices;
+    private SubTaskServices subtaskService;
 
-    public SubtaskController(SubTaskServices subTaskServices) {
-        this.subTaskServices = subTaskServices;
+    @PostMapping("/{subjectName}/{assignmentName}/{createdBy}")
+    public ResponseEntity<Subtask> createSubtask(
+            @PathVariable String subjectName,
+            @PathVariable String assignmentName,
+            @PathVariable String createdBy,
+            @RequestBody Subtask subtask) {
+        return ResponseEntity.ok(subtaskService.createSubtask(subjectName, assignmentName, createdBy, subtask));
     }
 
-    @PostMapping("/{assignmentId}")
-    public ResponseEntity<Subtask> addSubtask(@PathVariable String assignmentId, @RequestBody Subtask subtask) {
-        return ResponseEntity.ok(subTaskServices.addSubtask(assignmentId, subtask));
+    @PutMapping("/{subjectName}/{assignmentName}/{createdBy}/{subtaskTitle}")
+    public ResponseEntity<Subtask> updateSubtask(
+            @PathVariable String subjectName,
+            @PathVariable String assignmentName,
+            @PathVariable String createdBy,
+            @PathVariable String subtaskTitle,
+            @RequestBody Subtask subtask) {
+        return ResponseEntity.ok(subtaskService.updateSubtask(subjectName, assignmentName, createdBy, subtaskTitle, subtask));
     }
 
-    @GetMapping("/{assignmentId}")
-    public ResponseEntity<List<Subtask>> getSubtasksByAssignmentId(@PathVariable String assignmentId) {
-        return ResponseEntity.ok(subTaskServices.getSubtasksByAssignmentId(assignmentId));
+    @DeleteMapping("/{subjectName}/{assignmentName}/{createdBy}/{subtaskTitle}")
+    public ResponseEntity<String> deleteSubtask(
+            @PathVariable String subjectName,
+            @PathVariable String assignmentName,
+            @PathVariable String createdBy,
+            @PathVariable String subtaskTitle) {
+        subtaskService.deleteSubtask(subjectName, assignmentName, createdBy, subtaskTitle);
+        return ResponseEntity.ok("Subtask deleted successfully");
     }
 
-    @DeleteMapping("/{subtaskId}")
-    public ResponseEntity<Void> deleteSubtask(@PathVariable String subtaskId) {
-        subTaskServices.deleteSubtask(subtaskId);
-        return ResponseEntity.noContent().build();
+    @GetMapping("/{subjectName}/{assignmentName}/{createdBy}")
+    public ResponseEntity<List<Subtask>> getSubtasks(
+            @PathVariable String subjectName,
+            @PathVariable String assignmentName,
+            @PathVariable String createdBy) {
+        return ResponseEntity.ok(subtaskService.getSubtasks(subjectName, assignmentName, createdBy));
     }
 }

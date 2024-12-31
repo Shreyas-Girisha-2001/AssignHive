@@ -33,6 +33,13 @@ public class AssignmentController {
         return ResponseEntity.ok(assignments);
     }
 
+    @GetMapping("/{createdBy}")
+    public ResponseEntity<List<Assignment>> getAssignmentsByUsername(
+            @PathVariable String createdBy) {
+        List<Assignment> assignments = assignmentService.getAssignmentsByUser(createdBy);
+        return ResponseEntity.ok(assignments);
+    }
+
     // Update an Assignment
     @PutMapping("/{subjectName}/{createdBy}/{title}")
     public ResponseEntity<Assignment> updateAssignment(

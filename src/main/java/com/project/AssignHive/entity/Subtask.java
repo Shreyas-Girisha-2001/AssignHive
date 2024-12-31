@@ -9,27 +9,12 @@ import java.time.LocalDate;
 public class Subtask {
 
     @Id
-    private String id; // Unique identifier for the subtask
-
-    private String assignmentId; // ID of the associated assignment
-    private String title; // Title or name of the subtask
-    private String description; // Optional description of the subtask
-    private LocalDate dueDate; // Deadline for the subtask
-    private boolean completed; // Status of the subtask (completed or not)
-
-    // Default constructor
-    public Subtask() {
-    }
-
-    // Parameterized constructor
-    public Subtask(String id, String assignmentId, String title, String description, LocalDate dueDate, boolean completed) {
-        this.id = id;
-        this.assignmentId = assignmentId;
-        this.title = title;
-        this.description = description;
-        this.dueDate = dueDate;
-        this.completed = completed;
-    }
+    private String id;
+    private String title; // Subtask title
+    private LocalDate deadline; // Subtask deadline
+    private String assignmentName; // Assignment reference
+    private String subjectName; // Subject reference
+    private String createdBy; // User who created the subtask
 
     // Getters and Setters
     public String getId() {
@@ -40,14 +25,6 @@ public class Subtask {
         this.id = id;
     }
 
-    public String getAssignmentId() {
-        return assignmentId;
-    }
-
-    public void setAssignmentId(String assignmentId) {
-        this.assignmentId = assignmentId;
-    }
-
     public String getTitle() {
         return title;
     }
@@ -56,27 +33,35 @@ public class Subtask {
         this.title = title;
     }
 
-    public String getDescription() {
-        return description;
+    public LocalDate getDeadline() {
+        return deadline;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setDeadline(LocalDate deadline) {
+        this.deadline = deadline;
     }
 
-    public LocalDate getDueDate() {
-        return dueDate;
+    public String getAssignmentName() {
+        return assignmentName;
     }
 
-    public void setDueDate(LocalDate dueDate) {
-        this.dueDate = dueDate;
+    public void setAssignmentName(String assignmentName) {
+        this.assignmentName = assignmentName;
     }
 
-    public boolean isCompleted() {
-        return completed;
+    public String getSubjectName() {
+        return subjectName;
     }
 
-    public void setCompleted(boolean completed) {
-        this.completed = completed;
+    public void setSubjectName(String subjectName) {
+        this.subjectName = subjectName;
+    }
+
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
     }
 }

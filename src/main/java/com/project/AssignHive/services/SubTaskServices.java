@@ -6,7 +6,8 @@ import com.project.AssignHive.entity.Subtask;
 import java.util.List;
 
 public interface SubTaskServices {
-    Subtask addSubtask(String assignmentId, Subtask subtask);
-    List<Subtask> getSubtasksByAssignmentId(String assignmentId);
-    void deleteSubtask(String subtaskId);
+    Subtask createSubtask(String subjectName, String assignmentName, String createdBy, Subtask subtask);
+    Subtask updateSubtask(String subjectName, String assignmentName, String createdBy, String subtaskTitle, Subtask subtask);
+    void deleteSubtask(String subjectName, String assignmentName, String createdBy, String subtaskTitle);
+    List<Subtask> getSubtasks(String subjectName, String assignmentName, String createdBy);
 }

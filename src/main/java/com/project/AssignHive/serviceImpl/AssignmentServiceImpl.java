@@ -6,6 +6,7 @@ import com.project.AssignHive.repository.AssignmentRepository;
 import com.project.AssignHive.repository.SubjectRepository;
 import com.project.AssignHive.services.AssignmentServices;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,15 +24,15 @@ public class AssignmentServiceImpl implements AssignmentServices {
     public Assignment createAssignment(String subjectName, String createdBy, Assignment assignment) {
         // Validate subject existence for the given user
         subjectRepository.findByNameAndCreatedBy(subjectName, createdBy)
-                .orElseThrow(() -> new ResourceNotFoundException(
+                .orElseThrow(() -> new DataIntegrityViolationException(
                         "Subject not found with name: " + subjectName + " for user: " + createdBy));
 
-        // Check if assignment already exists
+        // Check if an assignment with the same name already exists for the user and subject
         boolean exists = assignmentRepository.findBySubjectNameAndCreatedBy(subjectName, createdBy).stream()
-                .anyMatch(a -> a.getSubjectName().equals(assignment.getSubjectName()));
+                .anyMatch(a -> a.getTitle().equals(assignment.getTitle())); // Check assignment name instead
 
         if (exists) {
-            throw new IllegalArgumentException("Assignment with the same name already exists for this subject and user.");
+            throw new DataIntegrityViolationException("Assignment with the same name already exists for this subject and user.");
         }
 
         // Set additional fields
@@ -46,9 +47,17 @@ public class AssignmentServiceImpl implements AssignmentServices {
         // Validate the subject exists
         subjectRepository.findByNameAndCreatedBy(subjectName,createdBy)
                 .orElseThrow(() -> new ResourceNotFoundException("Subject not found with name: " + subjectName));
-
         // Fetch assignments
         return assignmentRepository.findBySubjectNameAndCreatedBy(subjectName, createdBy);
+    }
+
+    @Override
+    public List<Assignment> getAssignmentsByUser(String createdBy){
+        List<Assignment> assignmentList =assignmentRepository.findByCreatedBy(createdBy);
+        if(assignmentList.isEmpty()){
+            throw new ResourceNotFoundException("No Assignments found for user : "+createdBy);
+        }
+        return assignmentList;
     }
 
     @Override
@@ -68,18 +77,11 @@ public class AssignmentServiceImpl implements AssignmentServices {
     public void deleteAssignment(String subjectName, String assignmentName, String createdBy) {
         // Find the assignment to delete
         Assignment assignment = assignmentRepository.findBySubjectNameAndCreatedBy(subjectName, createdBy).stream()
-                .filter(a -> a.getSubjectName().equals(assignmentName))
+                .filter(a -> a.getTitle().equals(assignmentName))
                 .findFirst()
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Assignment not found with name: " + assignmentName + " for user: " + createdBy
                 ));
-
         assignmentRepository.delete(assignment);
-    }
-
-    @Override
-    public void deleteAssignmentsBySubject(String subjectName, String createdBy) {
-        // Delete assignments associated with the subject and user
-        assignmentRepository.deleteBySubjectNameAndCreatedBy(subjectName, createdBy);
     }
 }

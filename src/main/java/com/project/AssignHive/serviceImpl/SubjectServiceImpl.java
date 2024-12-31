@@ -5,11 +5,14 @@ import com.project.AssignHive.entity.Subject;
 import com.project.AssignHive.entity.User;
 import com.project.AssignHive.exception.ResourceNotFoundException;
 import com.project.AssignHive.repository.AssignmentRepository;
+import com.project.AssignHive.repository.SubTaskRepository;
 import com.project.AssignHive.repository.SubjectRepository;
 import com.project.AssignHive.repository.UserRepository;
 import com.project.AssignHive.services.SubjectServices;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +30,9 @@ public class SubjectServiceImpl implements SubjectServices {
     @Autowired
     private AssignmentRepository assignmentRepository;
 
+    @Autowired
+    private SubTaskRepository subtaskRepository;
+
     @Override
     public Subject createSubjectForUser(String username, Subject subject) {
         User user = userRepository.findByUsername(username)
@@ -39,13 +45,13 @@ public class SubjectServiceImpl implements SubjectServices {
 
         // Check if the subject already exists for this user
         if (user.getSubjects().contains(subject.getName())) {
-            throw new ResourceNotFoundException("Subject with name '" + subject.getName() + "' already exists for user: " + username);
+            throw new DataIntegrityViolationException("Subject with name '" + subject.getName() + "' already exists for user: " + username);
         }
 
         // Check if the subject already exists in the Subject collection for the same user
         Optional<Subject> existingSubject = subjectRepository.findByNameAndCreatedBy(subject.getName(), username);
         if (existingSubject.isPresent()) {
-            throw new ResourceNotFoundException("Subject with name '" + subject.getName() + "' already exists for user: " + username);
+            throw new DataIntegrityViolationException("Subject with name '" + subject.getName() + "' already exists for user: " + username);
         }
 
         // Set the createdBy field and save the subject to the Subject collection
@@ -91,19 +97,25 @@ public class SubjectServiceImpl implements SubjectServices {
     }
 
     @Override
+    @Transactional
     public void deleteSubject(String subjectName, String createdBy) {
         // Validate the subject exists for the specific user
         Subject subject = subjectRepository.findByNameAndCreatedBy(subjectName, createdBy)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Subject not found with name: " + subjectName + " for user: " + createdBy));
 
-        // Delete all assignments linked to the subject for the specific user
+        // Delete all subtasks for the assignments under the subject for the user
+        assignmentRepository.findBySubjectNameAndCreatedBy(subjectName, createdBy)
+                .forEach(assignment -> subtaskRepository.deleteByAssignmentNameAndSubjectNameAndCreatedBy(
+                        assignment.getTitle(), subjectName, createdBy));
+
+        // Delete all assignments under the subject for the user
         assignmentRepository.deleteBySubjectNameAndCreatedBy(subjectName, createdBy);
 
         // Delete the subject
         subjectRepository.delete(subject);
 
-        // Update the user's subjects array
+        // Update the user's subject list
         Optional<User> userOptional = userRepository.findByUsername(createdBy);
         if (userOptional.isPresent()) {
             User user = userOptional.get();
