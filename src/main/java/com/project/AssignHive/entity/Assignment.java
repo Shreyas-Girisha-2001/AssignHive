@@ -15,6 +15,15 @@ public class Assignment {
     private String subjectName; // Reference to the subject
     private String createdBy; // User who created the assignment
     private LocalDate dueDate; // Assignment's due date
+    private boolean isCompleted;
+
+    public boolean isCompleted() {
+        return isCompleted;
+    }
+
+    public void setCompleted(boolean completed) {
+        isCompleted = completed;
+    }
 
     // Getters and Setters
     public String getId() {

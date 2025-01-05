@@ -52,6 +52,22 @@ public class AssignmentController {
         return ResponseEntity.ok(assignment);
     }
 
+    @PutMapping("{subjectName}/{createdBy}/{title}/complete")
+    public ResponseEntity<String> setComplete( @PathVariable String subjectName,
+                                               @PathVariable String createdBy,
+                                               @PathVariable String title){
+        assignmentService.setCompleted(subjectName,title,createdBy);
+        return ResponseEntity.ok("Assignment is set Completed");
+    }
+
+    @PutMapping("{subjectName}/{createdBy}/{title}/incomplete")
+    public ResponseEntity<String> setInComplete( @PathVariable String subjectName,
+                                                 @PathVariable String createdBy,
+                                                 @PathVariable String title){
+        assignmentService.setCompleted(subjectName,title,createdBy);
+        return ResponseEntity.ok("Assignment is set Incompleted");
+    }
+
     // Delete an Assignment
     @DeleteMapping("/{subjectName}/{createdBy}/{title}")
     public ResponseEntity<String> deleteAssignment(

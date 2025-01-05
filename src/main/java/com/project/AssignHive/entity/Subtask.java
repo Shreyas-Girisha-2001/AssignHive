@@ -15,7 +15,15 @@ public class Subtask {
     private String assignmentName; // Assignment reference
     private String subjectName; // Subject reference
     private String createdBy; // User who created the subtask
+    private boolean isCompleted;
 
+    public boolean isCompleted() {
+        return isCompleted;
+    }
+
+    public void setCompleted(boolean completed) {
+        isCompleted = completed;
+    }
     // Getters and Setters
     public String getId() {
         return id;

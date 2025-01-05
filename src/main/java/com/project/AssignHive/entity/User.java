@@ -13,11 +13,11 @@ public class User {
     private String id;
     @Indexed(unique = true)
     private String username;
-
     private String email;
     private String password;
     private String role;
     private List<String> subjects;
+
 
     // Getters and setters
     public String getId() {

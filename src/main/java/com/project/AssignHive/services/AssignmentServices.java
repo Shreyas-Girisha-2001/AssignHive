@@ -9,4 +9,7 @@ public interface AssignmentServices {
     void deleteAssignment(String subjectName, String assignmentName, String createdBy);
     List<Assignment> getAssignmentsBySubject(String subjectName, String createdBy);
     List<Assignment> getAssignmentsByUser(String username);
+    void setCompleted(String subjectName, String assignmentName, String createdBy);
+    void inCompleted(String subjectName, String assignmentName, String createdBy);
+
 }

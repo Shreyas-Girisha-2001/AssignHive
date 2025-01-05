@@ -10,6 +10,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AssignmentServiceImpl implements AssignmentServices {
@@ -38,6 +39,7 @@ public class AssignmentServiceImpl implements AssignmentServices {
         // Set additional fields
         assignment.setSubjectName(subjectName);
         assignment.setCreatedBy(createdBy);
+        assignment.setCompleted(false);
 
         return assignmentRepository.save(assignment);
     }
@@ -61,15 +63,38 @@ public class AssignmentServiceImpl implements AssignmentServices {
     }
 
     @Override
+    public void setCompleted(String subjectName, String createdBy, String title) {
+        // Fetch the existing assignment
+        Assignment existing = assignmentRepository.findByTitleAndSubjectNameAndCreatedBy(title, subjectName, createdBy)
+                .orElseThrow(() -> new ResourceNotFoundException("Assignment not found with title: " + title + " for user: " + createdBy + " under subject: " + subjectName));
+
+        existing.setCompleted(true);
+        assignmentRepository.save(existing);
+
+    }
+
+    @Override
+    public void inCompleted(String subjectName, String createdBy, String title) {
+        // Fetch the existing assignment
+        Assignment existing = assignmentRepository.findByTitleAndSubjectNameAndCreatedBy(title, subjectName, createdBy)
+                .orElseThrow(() -> new ResourceNotFoundException("Assignment not found with title: " + title + " for user: " + createdBy + " under subject: " + subjectName));
+
+        existing.setCompleted(false);
+        assignmentRepository.save(existing);
+    }
+
+    @Override
     public Assignment updateAssignment(String subjectName, String createdBy, String title, Assignment updatedAssignment) {
         // Fetch the existing assignment
         Assignment existing = assignmentRepository.findByTitleAndSubjectNameAndCreatedBy(title, subjectName, createdBy)
                 .orElseThrow(() -> new ResourceNotFoundException("Assignment not found with title: " + title + " for user: " + createdBy + " under subject: " + subjectName));
 
         // Update fields
+        existing.setSubjectName(updatedAssignment.getSubjectName());
         existing.setTitle(updatedAssignment.getTitle());
         existing.setDescription(updatedAssignment.getDescription());
         existing.setDueDate(updatedAssignment.getDueDate());
+        existing.setCompleted(false);
         return assignmentRepository.save(existing);
     }
 
