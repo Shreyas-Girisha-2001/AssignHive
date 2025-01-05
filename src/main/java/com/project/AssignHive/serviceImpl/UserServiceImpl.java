@@ -6,6 +6,10 @@ import com.project.AssignHive.repository.UserRepository;
 import com.project.AssignHive.services.UserServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -20,13 +24,19 @@ public class UserServiceImpl implements UserServices {
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private JWTService jwtService;
+
     @Override
     public User createUser(User user) {
         // Check if username already exists
         if (userRepository.findByUsername(user.getUsername()).isPresent()) {
             throw new DataIntegrityViolationException("Username already exists: " + user.getUsername());
         }
-
+        user.setRole("User");
         // Hash the password before saving
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
@@ -66,5 +76,18 @@ public class UserServiceImpl implements UserServices {
     @Override
     public List<User> getAllUsers() {
         return userRepository.findAll();
+    }
+
+    @Override
+    public String loginUser(User user) {
+        if (userRepository.findByUsername(user.getUsername()).isPresent()) {
+            Authentication auth = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
+            if (auth.isAuthenticated()) {
+                return jwtService.generateToken(user.getUsername());
+            }
+            return "Login Failed, Invalid Credentials";
+        }
+        return "User with username "+user.getUsername()+" not found";
     }
 }

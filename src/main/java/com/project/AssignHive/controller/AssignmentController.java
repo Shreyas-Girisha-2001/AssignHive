@@ -9,6 +9,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/assignments")
+@CrossOrigin("*")
 public class AssignmentController {
 
     @Autowired

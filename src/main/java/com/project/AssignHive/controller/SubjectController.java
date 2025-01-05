@@ -10,6 +10,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/subjects")
+@CrossOrigin("*")
 public class SubjectController {
 
     @Autowired

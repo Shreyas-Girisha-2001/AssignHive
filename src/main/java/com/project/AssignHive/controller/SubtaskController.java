@@ -10,6 +10,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/subtasks")
+@CrossOrigin("*")
 public class SubtaskController {
 
     @Autowired
